@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+<!--扫描前端控制器-->
+    <context:component-scan base-package="com.itheima.web"/>
+<!--    开启aop注解支持-->
+    <aop:aspectj-autoproxy/>
+<!--    开启注解支持-->
+    <mvc:annotation-driven conversion-service="conversionService"/>
+<!--    配置视图解析器-->
+    <bean id="viewResource" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+<!--    配置异常统一处理-->
+    <bean class="com.itheima.exception.MyException"/>
+<!--    自定义异常处理器-->
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.itheima.converter.StringToDateConverter"/>
+            </set>
+        </property>
+    </bean>
+    <!--服务名-->
+    <dubbo:application name="export_web_manager"></dubbo:application>
+    <!--注册中心-->
+    <dubbo:registry address="zookeeper://192.168.80.128:2181"></dubbo:registry>
+    <!--保扫描-->
+    <dubbo:annotation package="com.itheima.web.controller"></dubbo:annotation>
+    <!--检查-->
+    <dubbo:consumer check="true"></dubbo:consumer>
+    <!--上传配置-->
+    <!-- id 的值是固定的-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设置上传文件的最大尺寸为 5MB -->
+        <property name="maxUploadSize">
+            <value>5242880</value>
+        </property>
+    </bean>
+<!--    加载七牛云配置文件-->
+    <context:property-placeholder location="classpath:properties/qiniu.properties"></context:property-placeholder>
+</beans>

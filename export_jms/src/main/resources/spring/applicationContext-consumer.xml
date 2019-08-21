@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<!--1.连接中间件工厂-->
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://192.168.80.128:61616"></property>
+    </bean>
+<!--    2.spring管理连接工厂-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"></property>
+    </bean>
+<!--    3.配置点对点监听器-->
+    <bean id="EmailListener" class="com.itheima.listener.EmailListener"></bean>
+    <jms:listener-container destination-type="queue" connection-factory="connectionFactory">
+        <jms:listener destination="email" ref="EmailListener"></jms:listener>
+    </jms:listener-container>
+
+<!--    <jms:listener-container destination-type="topic" connection-factory="connectionFactory">-->
+<!--        <jms:listener destination="xxx02" ref="topicListener"></jms:listener>-->
+<!--    </jms:listener-container>-->
+</beans>

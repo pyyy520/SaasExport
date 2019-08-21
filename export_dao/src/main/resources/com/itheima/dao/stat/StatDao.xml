@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.stat.StatDao">
+    <select id="findFactoryData" resultType="map" parameterType="String">
+        SELECT factory_name name, SUM(amount) value FROM co_contract_product WHERE company_id=#{companyId} GROUP BY factory_name
+    </select>
+    <select id="findSellData" parameterType="String" resultType="map">
+        SELECT * FROM (
+           SELECT SUM(amount) amount, product_no productNo FROM co_contract_product WHERE company_id=#{companyId}  GROUP BY product_no ORDER BY  SUM(amount) DESC
+        ) d LIMIT 15
+    </select>
+    <select id="findOnlineData" resultType="map" parameterType="String">
+        SELECT i.a1 HOUR, IFNULL(d.count,0) COUNT  FROM st_online_info i  LEFT JOIN (
+             SELECT  DATE_FORMAT(co.time,'%H') hour, count(co.id) count FROM st_sys_log co WHERE company_id=#{companyId} GROUP BY DATE_FORMAT(co.time,'%H')
+        ) d ON i.a1=d.hour
+    </select>
+
+    <select id="getProduct" parameterType="string" resultType="map">
+  SELECT product_No productNo,SUM(price) price from co_product GROUP BY product_No ORDER BY SUM(price)  DESC LIMIT 0,10;
+    </select>
+
+    <select id="getIp" parameterType="string" resultType="map">
+SELECT user_name ip,COUNT(1) count from st_sys_log where company_id=#{id} AND action = '用户登陆'
+ GROUP BY ip HAVING COUNT(1)>1
+
+    </select>
+
+
+</mapper>

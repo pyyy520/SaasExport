@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.cargo.InvoiceDao">
+  <resultMap id="BaseResultMap" type="com.itheima.domain.cargo.Invoice">
+    <id column="invoice_id" jdbcType="VARCHAR" property="invoiceId" />
+    <result column="sc_no" jdbcType="VARCHAR" property="scNo" />
+    <result column="bl_no" jdbcType="VARCHAR" property="blNo" />
+    <result column="trade_terms" jdbcType="VARCHAR" property="tradeTerms" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_dept" jdbcType="VARCHAR" property="createDept" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    invoice_id, sc_no, bl_no, trade_terms, state, create_by, create_dept, create_time
+  </sql>
+  <select id="selectByExample" parameterType="com.itheima.domain.cargo.InvoiceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from co_invoice
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from co_invoice
+    where invoice_id = #{invoiceId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from co_invoice
+    where invoice_id = #{invoiceId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.itheima.domain.cargo.Invoice">
+    insert into co_invoice (invoice_id, sc_no, bl_no, 
+      trade_terms, state, create_by, 
+      create_dept, create_time)
+    values (#{invoiceId,jdbcType=VARCHAR}, #{scNo,jdbcType=VARCHAR}, #{blNo,jdbcType=VARCHAR}, 
+      #{tradeTerms,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
+      #{createDept,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.itheima.domain.cargo.Invoice">
+    insert into co_invoice
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="invoiceId != null">
+        invoice_id,
+      </if>
+      <if test="scNo != null">
+        sc_no,
+      </if>
+      <if test="blNo != null">
+        bl_no,
+      </if>
+      <if test="tradeTerms != null">
+        trade_terms,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDept != null">
+        create_dept,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="invoiceId != null">
+        #{invoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="scNo != null">
+        #{scNo,jdbcType=VARCHAR},
+      </if>
+      <if test="blNo != null">
+        #{blNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeTerms != null">
+        #{tradeTerms,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDept != null">
+        #{createDept,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.itheima.domain.cargo.Invoice">
+    update co_invoice
+    <set>
+      <if test="scNo != null">
+        sc_no = #{scNo,jdbcType=VARCHAR},
+      </if>
+      <if test="blNo != null">
+        bl_no = #{blNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeTerms != null">
+        trade_terms = #{tradeTerms,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDept != null">
+        create_dept = #{createDept,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where invoice_id = #{invoiceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.itheima.domain.cargo.Invoice">
+    update co_invoice
+    set sc_no = #{scNo,jdbcType=VARCHAR},
+      bl_no = #{blNo,jdbcType=VARCHAR},
+      trade_terms = #{tradeTerms,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_dept = #{createDept,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where invoice_id = #{invoiceId,jdbcType=VARCHAR}
+  </update>
+</mapper>
